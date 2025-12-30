@@ -2,27 +2,60 @@
 
 import Link from "next/link";
 import Container from "@/components/ui/Container";
-import { ShoppingBagIcon } from "@heroicons/react/24/outline";
+import { ShoppingBagIcon, Bars3Icon } from "@heroicons/react/24/outline";
 import { useCart } from "@/context/CartContext";
+import { useState } from "react";
 
 export default function Header() {
   const { totalQuantity, checkoutUrl } = useCart();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-transparent">
       <Container className="py-4">
         <div className="flex h-16 items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="flex-1 text-xl font-medium tracking-widest">
+          {/* Mobile Menu Button - Left */}
+          <button
+            className="md:hidden"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            <Bars3Icon className="h-6 w-6 text-foreground" />
+          </button>
+
+          {/* Logo - Center on mobile, Left on desktop */}
+          <Link
+            href="/"
+            className="absolute left-1/2 -translate-x-1/2 text-2xl font-medium tracking-widest md:static md:translate-x-0 md:flex-1"
+          >
             TACOARTE
           </Link>
 
-          {/* Navigation */}
+          {/* Navigation - Desktop only */}
           <nav className="hidden flex-1 justify-center md:flex">
-            <Link className="text-foreground font-medium px-4 py-2" href="/collections">Shop</Link>
-            <Link className="text-foreground font-medium px-4 py-2" href="/exhibitions">Exhibitions</Link>
-            <Link className="text-foreground font-medium px-4 py-2" href="/contact">Contact</Link>
-            <Link className="text-foreground font-medium px-4 py-2" href="/about">About</Link>
+            <Link
+              className="text-foreground font-medium px-4 py-2"
+              href="/collections"
+            >
+              Gallery
+            </Link>
+            <Link
+              className="text-foreground font-medium px-4 py-2"
+              href="/exhibitions"
+            >
+              Exhibitions
+            </Link>
+            <Link
+              className="text-foreground font-medium px-4 py-2"
+              href="/contact"
+            >
+              Contact
+            </Link>
+            <Link
+              className="text-foreground font-medium px-4 py-2"
+              href="/about"
+            >
+              About
+            </Link>
           </nav>
 
           {/* Cart */}
@@ -55,6 +88,43 @@ export default function Header() {
             </div>
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <nav
+            className="md:hidden absolute top-16 left-0 right-0 bg-white border-b px-6 py-6 shadow-xl 
+          flex flex-col space-y-4"
+          >
+            <Link
+              className="text-foreground font-medium"
+              href="/collections"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Gallery
+            </Link>
+            <Link
+              className="text-foreground font-medium"
+              href="/exhibitions"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Exhibitions
+            </Link>
+            <Link
+              className="text-foreground font-medium"
+              href="/contact"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Contact
+            </Link>
+            <Link
+              className="text-foreground font-medium"
+              href="/about"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              About
+            </Link>
+          </nav>
+        )}
       </Container>
     </header>
   );

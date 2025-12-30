@@ -1,14 +1,9 @@
 import { getCollections } from "@/lib/shopify";
-import { redirect } from "next/navigation";
+import CollectionsNav from "@/components/collections/CollectionsNav";
 
 export default async function CollectionsPage() {
   const data = await getCollections();
-  const firstCollection =
-    data.collections?.edges?.[0]?.node;
+  const collections = data.collections?.edges ?? [];
 
-  if (!firstCollection) {
-    return null;
-  }
-
-  redirect(`/collections/${firstCollection.handle}`);
+  return <CollectionsNav collections={collections} />;
 }

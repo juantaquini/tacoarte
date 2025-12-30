@@ -22,7 +22,7 @@ body {
 }
 
 .border-foreground {
-  color: var(--foreground);
+  border-color: var(--foreground);
 }
 
 .text-accent {

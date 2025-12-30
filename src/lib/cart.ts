@@ -49,6 +49,54 @@ export async function addToCart(cartId: string, variantId: string) {
 }
 
 /* -------------------------------------------------------------------------- */
+/*                              UPDATE CART LINE                              */
+/* -------------------------------------------------------------------------- */
+
+export async function updateCartLine(
+  cartId: string,
+  lineId: string,
+  quantity: number
+) {
+  return shopifyFetch({
+    query: `
+      mutation UpdateCartLine($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
+        cartLinesUpdate(cartId: $cartId, lines: $lines) {
+          cart {
+            totalQuantity
+          }
+        }
+      }
+    `,
+    variables: {
+      cartId,
+      lines: [{ id: lineId, quantity }],
+    },
+  });
+}
+
+/* -------------------------------------------------------------------------- */
+/*                              REMOVE CART LINE                              */
+/* -------------------------------------------------------------------------- */
+
+export async function removeCartLine(cartId: string, lineId: string) {
+  return shopifyFetch({
+    query: `
+      mutation RemoveCartLine($cartId: ID!, $lineIds: [ID!]!) {
+        cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
+          cart {
+            totalQuantity
+          }
+        }
+      }
+    `,
+    variables: {
+      cartId,
+      lineIds: [lineId],
+    },
+  });
+}
+
+/* -------------------------------------------------------------------------- */
 /*                                  GET CART                                  */
 /* -------------------------------------------------------------------------- */
 
@@ -65,6 +113,7 @@ export async function getCart(cartId: string) {
             merchandise: {
               id: string;
               title: string;
+              quantityAvailable: number;
               price: {
                 amount: string;
                 currencyCode: string;
@@ -96,6 +145,7 @@ export async function getCart(cartId: string) {
                   ... on ProductVariant {
                     id
                     title
+                    quantityAvailable
                     price {
                       amount
                       currencyCode

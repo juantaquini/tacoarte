@@ -18,47 +18,56 @@ export default async function ProductPage({ params }: Props) {
   }
 
   return (
-    <Container className="py-4">
-      <div className="grid gap-8 md:grid-cols-1">
-        <div className="h-[55vh] md:h-[75vh] overflow-x-scroll">
-          <div className="flex h-full gap-4 snap-x snap-mandatory">
-            {product.images.edges.map(({ node }) => (
-              <div
-                key={node.url}
-                className="relative shrink-0 min-w-full h-full snap-center"
-              >
-                <Image
-                  src={node.url}
-                  alt={node.altText ?? product.title}
-                  width={node.width ?? 1200}
-                  height={node.height ?? 800}
-                  sizes="100vw"
-                  className="h-full w-auto object-contain"
-                />
-              </div>
-            ))}
+    <div className="grid md:grid-cols-1">
+      <div className="h-[auto] mt-20 md:mt-0 md:h-[85vh] overflow-x-scroll">
+        <div className="flex h-full gap-4 snap-x snap-mandatory">
+          {product.images.edges.map(({ node }) => (
+            <div
+              key={node.url}
+              className="relative shrink-0 w-full md:w-auto h-full snap-center"
+            >
+              <Image
+                src={node.url}
+                alt={node.altText ?? product.title}
+                width={node.width ?? 1200}
+                height={node.height ?? 800}
+                sizes="100vw"
+                className="h-full w-full md:w-auto object-contain"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+      <Container className="px-4 flex flex-col justify-center items-center">
+        <div className="h-[10vh] md:h-[15vh] w-full flex md:flex-row items-center justify-between">
+          <div className="flex flex-col md:flex-row md:gap-4 md:flex-1 items-center">
+            <h1 className="text-medium">{product.title}</h1>
+            <p className="text-medium">
+              {parseFloat(
+                product.priceRange.minVariantPrice.amount
+              ).toLocaleString("es-AR", {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+              })}{" "}
+              {product.priceRange.minVariantPrice.currencyCode}
+            </p>
+          </div>
+          {product.customDimensions?.value && (
+            <div className="hidden md:block prose text-foreground text-neutral-600">
+              <p>{product.customDimensions.value}</p>
+            </div>
+          )}
+          <div className="flex md:flex-1 justify-end">
+            <AddToCartButton variantId={product.variants.edges[0].node.id} />
           </div>
         </div>
-
         <div className="flex flex-col gap-8 align-center">
-          <div className="flex flex-row items-center justify-between">
-            <div className="flex flex-row gap-2 flex-1 align-center">
-              <h1 className="text-xl">{product.title}</h1>|
-              <p className="text-xl">
-                {product.priceRange.minVariantPrice.amount}{" "}
-                {product.priceRange.minVariantPrice.currencyCode}
-              </p>
-            </div>
+          <div className="flex flex-col max-w-[500px] text-center gap-8">
             {product.customDimensions?.value && (
-              <div className="prose text-foreground text-neutral-600">
+              <div className="md:hidden text-foreground text-neutral-600">
                 <p>{product.customDimensions.value}</p>
               </div>
             )}
-            <div className="flex flex-1 justify-end">
-              <AddToCartButton variantId={product.variants.edges[0].node.id} />
-            </div>
-          </div>
-          <div className="flex flex-col text-center gap-8">
             <div
               className="prose text-foreground text-neutral-600"
               dangerouslySetInnerHTML={{
@@ -73,7 +82,7 @@ export default async function ProductPage({ params }: Props) {
             )}
           </div>
         </div>
-      </div>
-    </Container>
+      </Container>
+    </div>
   );
 }

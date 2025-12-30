@@ -7,7 +7,13 @@ import {
   useState,
   ReactNode,
 } from "react";
-import { createCart, addToCart, getCart } from "@/lib/cart";
+import {
+  createCart,
+  addToCart,
+  getCart,
+  updateCartLine,
+  removeCartLine,
+} from "@/lib/cart";
 
 type CartContextType = {
   cartId: string | null;
@@ -15,6 +21,8 @@ type CartContextType = {
   totalQuantity: number;
   lines: any[];
   addItem: (variantId: string) => Promise<void>;
+  updateItem: (lineId: string, quantity: number) => Promise<void>;
+  removeItem: (lineId: string) => Promise<void>;
   fetchCart: () => Promise<void>;
 };
 
@@ -62,6 +70,20 @@ export function CartProvider({ children }: { children: ReactNode }) {
     fetchCart();
   }
 
+  /* ----------------------------- UPDATE ITEM ----------------------------- */
+  async function updateItem(lineId: string, quantity: number) {
+    if (!cartId) return;
+    await updateCartLine(cartId, lineId, quantity);
+    fetchCart();
+  }
+
+  /* ----------------------------- REMOVE ITEM ----------------------------- */
+  async function removeItem(lineId: string) {
+    if (!cartId) return;
+    await removeCartLine(cartId, lineId);
+    fetchCart();
+  }
+
   useEffect(() => {
     if (cartId) fetchCart();
   }, [cartId]);
@@ -74,6 +96,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
         totalQuantity,
         lines,
         addItem,
+        updateItem,
+        removeItem,
         fetchCart,
       }}
     >
