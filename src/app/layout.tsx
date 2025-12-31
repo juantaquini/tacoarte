@@ -19,7 +19,10 @@ export const metadata: Metadata = {
     template: "%s · Taco Arte",
   },
   description:
-    "Obras originales en acuarela inspiradas en paisajes y viajes. Arte contemporáneo de autor.",
+    "Original watercolor artworks inspired by landscapes and travel. Contemporary artist-created art.",
+  icons: {
+    icon: "/images/taco-p5/TACO_005.png",
+  },
 };
 
 export default function RootLayout({

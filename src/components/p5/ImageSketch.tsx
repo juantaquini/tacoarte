@@ -2,6 +2,7 @@
 
 import React, { useState, useCallback, useRef } from "react";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 
 const Sketch = dynamic(() => import("react-p5").then((mod) => mod.default), {
   ssr: false,
@@ -53,7 +54,7 @@ const ImageSketch: React.FC = () => {
     (p5: P5Instance, canvasParentRef: Element) => {
       p5InstanceRef.current = p5;
       p5.createCanvas(p5.windowWidth, p5.windowHeight).parent(canvasParentRef);
-      p5.background("#ffffffff");
+      p5.clear();
       p5.frameRate(37);
 
       loadImage(p5, 0).then((img) => {
@@ -66,8 +67,9 @@ const ImageSketch: React.FC = () => {
   const draw = useCallback(
     (p5: P5Instance) => {
       if (!hasStarted) {
-        p5.background("#ffffffff");
-
+        // Limpiar el canvas antes de dibujar el texto
+        p5.clear();
+        
         const message =
           p5.windowWidth < 768 ? "Touch the screen" : "Click to start drawing";
 
@@ -82,6 +84,7 @@ const ImageSketch: React.FC = () => {
         p5.fill(c);
 
         p5.text(visibleText, p5.width / 2, p5.height / 2);
+        return;
       }
 
       if (isDrawingRef.current && currentImageRef.current) {
@@ -128,8 +131,10 @@ const ImageSketch: React.FC = () => {
 
   const windowResized = useCallback((p5: P5Instance) => {
     p5.resizeCanvas(p5.windowWidth, p5.windowHeight);
-    p5.background("#F5F5F5");
-  }, []);
+    if (hasStarted) {
+      p5.background("#ffffffff");
+    }
+  }, [hasStarted]);
 
   return (
     <div
@@ -141,13 +146,29 @@ const ImageSketch: React.FC = () => {
         touchAction: "none",
       }}
     >
-      <Sketch
-        setup={setup}
-        draw={draw}
-        mousePressed={mousePressed}
-        mouseReleased={mouseReleased}
-        windowResized={windowResized}
-      />
+      {/* Background Image - visible solo cuando no ha comenzado */}
+      {!hasStarted && (
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="/images/IMG_1224.jpeg"
+            alt="Background"
+            fill
+            className="object-cover"
+            priority
+          />
+        </div>
+      )}
+
+      {/* Canvas P5 */}
+      <div className="relative z-10">
+        <Sketch
+          setup={setup}
+          draw={draw}
+          mousePressed={mousePressed}
+          mouseReleased={mouseReleased}
+          windowResized={windowResized}
+        />
+      </div>
     </div>
   );
 };

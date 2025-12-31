@@ -6,6 +6,7 @@ type Props = {
   tags?: string[];
   collectionHandle?: string;
   currentTag?: string;
+  showAll?: boolean;
 };
 
 export default function CollectionsNav({
@@ -13,23 +14,36 @@ export default function CollectionsNav({
   tags,
   collectionHandle,
   currentTag,
+  showAll = false,
 }: Props) {
   const linkClass =
     "inline-block whitespace-nowrap text-sm font-medium uppercase transition duration-200";
-  const activeClass = "-translate-y-2";
+  const activeClass = "-translate-y-3";
 
   return (
     <nav className="flex gap-6 overflow-x-auto py-8 scroll-smooth justify-start md:justify-center">
       {/* Mode: List Collections */}
-      {collections?.map(({ node }) => (
-        <Link
-          key={node.id}
-          href={`/collections/${node.handle}`}
-          className={linkClass}
-        >
-          {node.title}
-        </Link>
-      ))}
+      {collections && (
+        <>
+          <Link
+            href="/collections"
+            className={`${linkClass} ${showAll ? activeClass : ""}`}
+          >
+            All
+          </Link>
+          {collections.map(({ node }) => (
+            <Link
+              key={node.id}
+              href={`/collections/${node.handle}`}
+              className={`${linkClass} ${
+                collectionHandle === node.handle && !showAll ? activeClass : ""
+              }`}
+            >
+              {node.title}
+            </Link>
+          ))}
+        </>
+      )}
 
       {/* Mode: List Tags (inside a collection) */}
       {tags && collectionHandle && (
