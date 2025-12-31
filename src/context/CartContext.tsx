@@ -5,6 +5,7 @@ import {
   useContext,
   useEffect,
   useState,
+  useRef,
   ReactNode,
 } from "react";
 import {
@@ -20,6 +21,9 @@ type CartContextType = {
   checkoutUrl: string | null;
   totalQuantity: number;
   lines: any[];
+  isCartOpen: boolean;
+  openCart: () => void;
+  closeCart: (delay?: number) => void;
   addItem: (variantId: string) => Promise<void>;
   updateItem: (lineId: string, quantity: number) => Promise<void>;
   removeItem: (lineId: string) => Promise<void>;
@@ -33,6 +37,25 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [checkoutUrl, setCheckoutUrl] = useState<string | null>(null);
   const [totalQuantity, setTotalQuantity] = useState(0);
   const [lines, setLines] = useState<any[]>([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  /* ------------------------------ CART CONTROLS ------------------------------ */
+  const openCart = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setIsCartOpen(true);
+  };
+
+  const closeCart = (delay = 0) => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    if (delay > 0) {
+      timeoutRef.current = setTimeout(() => {
+        setIsCartOpen(false);
+      }, delay);
+    } else {
+      setIsCartOpen(false);
+    }
+  };
 
   /* ------------------------------ INIT CART ------------------------------ */
   useEffect(() => {
@@ -67,7 +90,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (!cartId) return;
 
     await addToCart(cartId, variantId);
-    fetchCart();
+    await fetchCart();
+    openCart();
+    closeCart(5000);
   }
 
   /* ----------------------------- UPDATE ITEM ----------------------------- */
@@ -95,6 +120,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
         checkoutUrl,
         totalQuantity,
         lines,
+        isCartOpen,
+        openCart,
+        closeCart,
         addItem,
         updateItem,
         removeItem,

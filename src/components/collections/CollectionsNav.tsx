@@ -19,7 +19,7 @@ export default function CollectionsNav({
   const activeClass = "-translate-y-2";
 
   return (
-    <nav className="flex justify-center gap-6 overflow-x-auto py-8">
+    <nav className="flex gap-6 overflow-x-auto py-8 scroll-smooth justify-start md:justify-center">
       {/* Mode: List Collections */}
       {collections?.map(({ node }) => (
         <Link
@@ -49,7 +49,9 @@ export default function CollectionsNav({
               href={`/collections/${collectionHandle}?tag=${encodeURIComponent(
                 tag
               )}`}
-              className={`${linkClass} ${currentTag === tag ? activeClass : ""}`}
+              className={`${linkClass} ${
+                currentTag === tag ? activeClass : ""
+              }`}
             >
               {tag}
             </Link>
