@@ -16,6 +16,7 @@ const cachedImages: Record<number, any> = {};
 const ImageSketch: React.FC = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [hasStarted, setHasStarted] = useState(false);
+  const [isExporting, setIsExporting] = useState(false); 
 
   const p5InstanceRef = useRef<P5Instance | null>(null);
   const currentImageRef = useRef<any>(null);
@@ -23,6 +24,28 @@ const ImageSketch: React.FC = () => {
 
   const getImageSize = (p5: P5Instance): number => {
     return p5.windowWidth < 768 ? 80 : 250;
+  };
+
+  const exportImage = async () => {
+    if (isExporting) return; 
+    setIsExporting(true);
+
+    try {
+      const p5 = p5InstanceRef.current;
+      if (!p5) return;
+
+      const dataUrl = p5.canvas.toDataURL("image/png");
+
+      await fetch("/api/save-sketch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: dataUrl }),
+      });
+    } catch (error) {
+      console.error("Error exporting image:", error);
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   const loadImage = useCallback(
@@ -35,9 +58,7 @@ const ImageSketch: React.FC = () => {
         ).padStart(3, "0")}.png`;
 
         const img = await new Promise((resolve) => {
-          const loadedImg = p5.loadImage(imagePath, () =>
-            resolve(loadedImg)
-          );
+          const loadedImg = p5.loadImage(imagePath, () => resolve(loadedImg));
         });
 
         cachedImages[index] = img;
@@ -67,23 +88,19 @@ const ImageSketch: React.FC = () => {
   const draw = useCallback(
     (p5: P5Instance) => {
       if (!hasStarted) {
-        // Limpiar el canvas antes de dibujar el texto
         p5.clear();
-        
         const message =
           p5.windowWidth < 768 ? "Touch the screen" : "Click to start drawing";
 
         p5.textAlign(p5.CENTER, p5.CENTER);
         p5.textFont("IBM Plex Sans");
         p5.textSize(p5.windowWidth < 768 ? 20 : 28);
+        p5.fill("#2b3072");
 
-        const charsToShow = Math.floor((p5.frameCount * 0.15) % (message.length + 30));
-        const visibleText = message.substring(0, charsToShow);
-
-        const c = p5.color("#2b3072");
-        p5.fill(c);
-
-        p5.text(visibleText, p5.width / 2, p5.height / 2);
+        const charsToShow = Math.floor(
+          (p5.frameCount * 0.15) % (message.length + 30)
+        );
+        p5.text(message.substring(0, charsToShow), p5.width / 2, p5.height / 2);
         return;
       }
 
@@ -108,15 +125,14 @@ const ImageSketch: React.FC = () => {
 
       if (!hasStarted) {
         setHasStarted(true);
-        p5.background("#ffffffff");
+        p5.clear();
       }
 
       isDrawingRef.current = true;
 
-      const nextIndex =
-        (currentImageIndex + 1) % validImageIndices.length;
-
+      const nextIndex = (currentImageIndex + 1) % validImageIndices.length;
       const nextImage = await loadImage(p5, nextIndex);
+
       if (nextImage) {
         currentImageRef.current = nextImage;
         setCurrentImageIndex(nextIndex);
@@ -129,24 +145,18 @@ const ImageSketch: React.FC = () => {
     isDrawingRef.current = false;
   }, []);
 
-  const windowResized = useCallback((p5: P5Instance) => {
-    p5.resizeCanvas(p5.windowWidth, p5.windowHeight);
-    if (hasStarted) {
-      p5.background("#ffffffff");
-    }
-  }, [hasStarted]);
+  const windowResized = useCallback(
+    (p5: P5Instance) => {
+      p5.resizeCanvas(p5.windowWidth, p5.windowHeight);
+    },
+    []
+  );
 
   return (
     <div
-      className="page-container"
-      style={{
-        position: "fixed",
-        inset: 0,
-        overflow: "hidden",
-        touchAction: "none",
-      }}
+      className="fixed inset-0 overflow-hidden"
+      style={{ touchAction: "none" }}
     >
-      {/* Background Image - visible solo cuando no ha comenzado */}
       {!hasStarted && (
         <div className="absolute inset-0 z-0">
           <Image
@@ -159,8 +169,7 @@ const ImageSketch: React.FC = () => {
         </div>
       )}
 
-      {/* Canvas P5 */}
-      <div className="relative z-10">
+      <div className="relative z-10 pointer-events-none">
         <Sketch
           setup={setup}
           draw={draw}
@@ -169,6 +178,16 @@ const ImageSketch: React.FC = () => {
           windowResized={windowResized}
         />
       </div>
+
+      <button
+        onClick={exportImage}
+        disabled={isExporting}
+        className={`absolute bottom-30 right-12 z-50 pointer-events-auto bg-foreground text-white px-4 py-2 shadow-lg cursor-pointer ${
+          isExporting ? "opacity-60 cursor-not-allowed" : ""
+        }`}
+      >
+        {isExporting ? "Sending..." : "Send"}
+      </button>
     </div>
   );
 };

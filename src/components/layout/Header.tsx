@@ -8,7 +8,8 @@ import { useState } from "react";
 import CartPreview from "@/components/cart/CartPreview";
 
 export default function Header() {
-  const { totalQuantity, checkoutUrl, isCartOpen, openCart, closeCart } = useCart();
+  const { totalQuantity, checkoutUrl, isCartOpen, openCart, closeCart } =
+    useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleMouseEnter = () => {
@@ -50,9 +51,9 @@ export default function Header() {
             </Link>
             <Link
               className="text-foreground font-medium px-4 py-2"
-              href="/contact"
+              href="/user-sketches"
             >
-              Contact
+              User Sketches
             </Link>
             <Link
               className="text-foreground font-medium px-4 py-2"
@@ -74,7 +75,9 @@ export default function Header() {
                   }`}
                 />
                 {totalQuantity > 0 && (
-                  <span className="absolute -right-1 -top-4 block h-2 w-2">{totalQuantity}</span>
+                  <span className="absolute -right-1 -top-4 block h-2 w-2">
+                    {totalQuantity}
+                  </span>
                 )}
               </Link>
               {totalQuantity > 0 && checkoutUrl && (
@@ -114,10 +117,10 @@ export default function Header() {
             </Link>
             <Link
               className="text-foreground font-medium"
-              href="/contact"
+              href="/user-sketches"
               onClick={() => setMobileMenuOpen(false)}
             >
-              Contact
+              User Sketches
             </Link>
             <Link
               className="text-foreground font-medium"

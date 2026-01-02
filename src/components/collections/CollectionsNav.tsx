@@ -17,11 +17,11 @@ export default function CollectionsNav({
   showAll = false,
 }: Props) {
   const linkClass =
-    "inline-block whitespace-nowrap text-sm font-medium uppercase transition duration-200";
-  const activeClass = "-translate-y-3";
+    "inline-block whitespace-nowrap text-sm font-medium uppercase transition duration-200 px-4 py-2 rounded";
+  const activeClass = "-translate-y-3"; 
 
   return (
-    <nav className="flex gap-6 overflow-x-auto py-8 scroll-smooth justify-start md:justify-center">
+    <nav className="flex overflow-x-auto py-8 scroll-smooth justify-start md:justify-center">
       {/* Mode: List Collections */}
       {collections && (
         <>
