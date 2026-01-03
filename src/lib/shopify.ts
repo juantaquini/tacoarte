@@ -136,6 +136,8 @@ export async function getProductByHandle(handle: string) {
           node: {
             id: string;
             title: string;
+            availableForSale: boolean;
+            quantityAvailable: number;
           };
         }[];
       };
@@ -172,6 +174,8 @@ export async function getProductByHandle(handle: string) {
               node {
                 id
                 title
+                availableForSale
+                quantityAvailable
               }
             }
           }

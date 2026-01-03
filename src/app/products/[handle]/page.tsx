@@ -58,7 +58,16 @@ export default async function ProductPage({ params }: Props) {
             </div>
           )}
           <div className="flex md:flex-1 justify-end">
-            <AddToCartButton variantId={product.variants.edges[0].node.id} />
+            {product.variants.edges[0].node.availableForSale ? (
+              <AddToCartButton variantId={product.variants.edges[0].node.id} />
+            ) : (
+              <button
+                disabled
+                className="bg-red-500 px-4 py-1 text-white"
+              >
+                SOLD
+              </button>
+            )}
           </div>
         </div>
         <div className="flex flex-col gap-8 align-center">
@@ -77,7 +86,12 @@ export default async function ProductPage({ params }: Props) {
             {product.customCareInstructions?.value && (
               <div className="prose text-foreground text-neutral-600">
                 <h2 className="text-base font-medium">Care Instructions</h2>
-                <p>{product.customCareInstructions.value}</p>
+                {product.customCareInstructions.value
+                  .split(".")
+                  .filter((sentence) => sentence.trim() !== "")
+                  .map((sentence, index) => (
+                    <p key={index}>{sentence.trim()}.</p>
+                  ))}
               </div>
             )}
           </div>
