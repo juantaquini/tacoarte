@@ -51,9 +51,9 @@ export default function Header() {
             </Link>
             <Link
               className="text-foreground font-medium px-4 py-2"
-              href="/user-sketches"
+              href="/draw"
             >
-              User Sketches
+              Create a drawing
             </Link>
             <Link
               className="text-foreground font-medium px-4 py-2"
@@ -117,10 +117,10 @@ export default function Header() {
             </Link>
             <Link
               className="text-foreground font-medium"
-              href="/user-sketches"
+              href="/draw"
               onClick={() => setMobileMenuOpen(false)}
             >
-              User Sketches
+              Create a drawing
             </Link>
             <Link
               className="text-foreground font-medium"
