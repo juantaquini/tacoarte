@@ -225,7 +225,7 @@ const DrawingCanvas: React.FC<DrawingCanvasProps> = ({ onSave }) => {
         <div className="flex justify-between gap-2 p-3 border-t border-foreground">
           <button
             onClick={clearCanvas}
-            className="px-4 bg-foreground text-white"
+            className="px-4 bg-foreground text-white cursor-pointer"
           >
             Clear
           </button>
@@ -236,7 +236,7 @@ const DrawingCanvas: React.FC<DrawingCanvasProps> = ({ onSave }) => {
             className={`px-4 border border-foreground ${
               isExporting || !hasStartedUI
                 ? "bg-gray-300 cursor-not-allowed"
-                : "bg-foreground text-white"
+                : "bg-foreground text-white cursor-pointer"
             }`}
           >
             {isExporting ? "Saving..." : "Save"}
