@@ -84,11 +84,8 @@ export default function Header() {
               >
                 <Link href="/cart" className="relative block">
                   <ShoppingBagIcon
-                    className={`h-6 w-6 transition ${
-                      totalQuantity > 0
-                        ? "text-foreground"
-                        : "text-neutral-400"
-                    }`}
+                    className="h-6 w-6 text-foreground"
+              
                   />
                   {totalQuantity > 0 && (
                     <span className="absolute -right-1 -top-4 text-xs">
