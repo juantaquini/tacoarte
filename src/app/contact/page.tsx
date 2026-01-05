@@ -87,7 +87,7 @@ export default function ContactPage() {
         {/* Submit */}
         <button
           type="submit"
-          className="bg-foreground text-white px-6 py-2 ml-auto block w-fit"
+          className="bg-foreground text-white px-6 py-2 ml-auto block w-fit cursor-pointer"
         >
           Send message
         </button>

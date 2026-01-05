@@ -22,7 +22,7 @@ export default function DrawPage() {
                 : "text-foreground/50 hover:text-foreground"
             }`}
         >
-          CREATE
+          CREATE DRAWING
         </button>
 
         <button
@@ -34,7 +34,7 @@ export default function DrawPage() {
                 : "text-foreground/50 hover:text-foreground"
             }`}
         >
-          GALLERY
+          COMMUNITY GALLERY
         </button>
       </div>
     </div>
