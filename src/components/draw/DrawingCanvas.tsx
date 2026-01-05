@@ -63,7 +63,13 @@ const DrawingCanvas: React.FC<DrawingCanvasProps> = ({ onSave }) => {
       const w = (parent as HTMLElement).clientWidth;
       const h = 500;
 
-      p5.createCanvas(w, h).parent(parent);
+      const canvas = p5.createCanvas(w, h).parent(parent);
+
+      canvas.elt.style.userSelect = "none";
+      canvas.elt.style.webkitUserSelect = "none";
+      canvas.elt.style.webkitTouchCallout = "none";
+      canvas.elt.style.webkitTapHighlightColor = "transparent";
+
       p5.pixelDensity(window.devicePixelRatio || 1);
       p5.background(255);
       p5.frameRate(37);
@@ -112,8 +118,7 @@ const DrawingCanvas: React.FC<DrawingCanvasProps> = ({ onSave }) => {
 
       const msg =
         p5.windowWidth < 768 ? "Tap and drag" : "Create a community drawing";
-      const msg2 =
-        p5.windowWidth < 768 ? "to draw" : "Press and drag";
+      const msg2 = p5.windowWidth < 768 ? "to draw" : "Press and drag";
       const chars = Math.min(Math.floor(p5.frameCount * 0.4), msg.length);
 
       p5.text(msg.substring(0, chars), p5.width / 2, p5.height / 2);
@@ -207,8 +212,12 @@ const DrawingCanvas: React.FC<DrawingCanvasProps> = ({ onSave }) => {
         <div className="p-1">
           <div
             ref={containerRef}
-            className="border border-foreground overflow-hidden"
-            style={{ touchAction: "none" }}
+            className="border border-foreground overflow-hidden select-none"
+            style={{
+              touchAction: "none",
+              WebkitUserSelect: "none",
+              WebkitTouchCallout: "none",
+            }}
           >
             <Sketch
               setup={setup}
